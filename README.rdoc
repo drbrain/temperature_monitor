@@ -1,0 +1,42 @@
+= Arduino + DHT22 + XBee Temperature Monitor
+
+This project allows you to monitor the temperature remotely.  The hardware used
+in this project includes:
+
+* {Arduino Uno}[http://www.sparkfun.com/products/10356]
+* {DHT22 Humidity & Temperature Sensor}[http://www.sparkfun.com/products/10167]
+* Two {XBees}[http://www.sparkfun.com/products/8664]
+* One {XBee Explorer}[http://www.sparkfun.com/products/8687]
+* One {XBee Adapter Kit}[http://www.adafruit.com/products/126]
+* {Jumper wires}[http://www.sparkfun.com/products/9387]
+* One {Breadboard}[http://www.sparkfun.com/products/137]
+
+The XBee Adapter Kit was my first soldering attempt and I'm told I did a great
+job.  A PanaVise Junior and a Third Hand helped immensely, along with choosing
+a 1/64 inch soldering iron tip over the 1/32" tip that came with my soldering
+iron.
+
+I also cut three jumper wires, stripped them and soldered them to the DHT22.
+This was more difficult, but placing the sensor in the vise and using the Third
+Hand to hold the wire with a folded up piece of paper to protect the insulation
+helped line everything up.
+
+I attached the XBee Adapter to the breadboard and wired up 5V power and ground.
+I attached the TX pin of the adapter to digital pin 2 of the Arduino and the RX
+pin of the adapter to digital pin 3 of the Arduino.  I attached the sensor's
+data pin to port 7 (from the {DHT22
+source}[https://github.com/nethoncho/Arduino-DHT22]) and the ground and power
+to the proper pins on the breadboard.
+
+The xbee_mode_setup.rb script was used to set up the to XBees to communicate with each other.  Be sure to use the Arduino XBee's serial number as the destination address of the XBee Explorer and vice versa.
+
+The watch.rb script can be used to monitor the temperature the Arduino reads.
+
+Excluding the cost of the soldering equipment, this project cost under $150.
+
+Most of the software used in this project was already written by third-parties
+that I adapted to my needs.  The DHT22 library was changed from returning float
+to int (that I can decode on the ruby side).  xbee_mode_setup.rb was updated to
+work with a newer serialport gem for ruby and the documentation was
+reformatted.
+
