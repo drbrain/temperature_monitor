@@ -28,7 +28,7 @@ data pin to port 7 (from the {DHT22
 source}[https://github.com/nethoncho/Arduino-DHT22]) and the ground and power
 to the proper pins on the breadboard.
 
-The xbee_mode_setup.rb script was used to set up the to XBees to communicate with each other.  Be sure to use the Arduino XBee's serial number as the destination address of the XBee Explorer and vice versa.
+The xbee_modem_setup.rb script was used to set up the to XBees to communicate with each other.  Be sure to use the Arduino XBee's serial number as the destination address of the XBee Explorer and vice versa.
 
 The watch.rb script can be used to monitor the temperature the Arduino reads.
 
@@ -36,7 +36,7 @@ Excluding the cost of the soldering equipment, this project cost under $150.
 
 Most of the software used in this project was already written by third-parties
 that I adapted to my needs.  The DHT22 library was changed from returning float
-to int (that I can decode on the ruby side).  xbee_mode_setup.rb was updated to
-work with a newer serialport gem for ruby and the documentation was
+to int (that I can decode on the ruby side).  xbee_modem_setup.rb was updated
+to work with a newer serialport gem for ruby and the documentation was
 reformatted.
 
