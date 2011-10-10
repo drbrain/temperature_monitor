@@ -27,6 +27,7 @@ void loop(void)
   delay(interval * 1000);
   error_code = temp_sensor.readData();
 
+  write_int(0xFF00); // sync
   write_int(error_code);
 
   switch(error_code)
