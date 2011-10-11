@@ -28,11 +28,15 @@ class Watcher
   end
 
   def sync
-    state = [@xbee.get_byte]
+    state = [get_byte]
+
     loop do
-      state << @xbee.get_byte
+      state << get_byte
 
       break if state.last(2) == [0xFF, 0x00]
+
+      raise "there seems to be a protocol mismatch\n\t#{state.inspect}" if
+        state.length > 16
     end
   end
 
