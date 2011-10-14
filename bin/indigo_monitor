@@ -1,0 +1,4 @@
+require 'indigo_monitor'
+
+IndigoMonitor.run ARGV
+

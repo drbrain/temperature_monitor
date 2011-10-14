@@ -1,8 +1,6 @@
 require 'rubygems'
 require 'serialport'
 
-device = Dir['/dev/tty.usbserial*'].first
-
 class Watcher
 
   OK = 0
@@ -40,17 +38,27 @@ class Watcher
     end
   end
 
-  def display_data
+  def watch
     loop do
       sync
 
       status = get_int
+      temp = nil
+      humid = nil
 
-      case status
-      when OK then
+      if status == OK then
         temp  = get_int / 10.0
         humid = get_int / 10.0
+      end
 
+      yield status, temp, humid
+    end
+  end
+
+  def display_data
+    watch do |status, temp, humid|
+      case status
+      when OK then
         puts "%s %4gC %4g%%" % [Time.now, temp, humid]
       when BUS_HUNG then
         puts "Bus hung"
@@ -73,6 +81,9 @@ class Watcher
   end
 end
 
-watcher = Watcher.new device
-watcher.display_data
+if $0 == __FILE__ then
+  device = Dir['/dev/tty.usbserial*'].first
+  watcher = Watcher.new device
+  watcher.display_data
+end
 
