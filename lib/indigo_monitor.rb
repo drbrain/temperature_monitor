@@ -17,19 +17,20 @@ class IndigoMonitor
   end
 
   def c_to_f degrees_c
-    9.0 / 5.0 * dergees_c + 32
+    9.0 / 5.0 * degrees_c + 32
   end
 
   def get_variable name
     begin
-      app.variables[name].value.get
+      @app.variables[name].value.get # check for existence
+      @app.variables[name]
     rescue Appscript::CommandError
-      app.make new: :variable, with_properties: { name: name }
+      @app.make new: :variable, with_properties: { name: name }
     end
   end
 
   def run
-    watch do |status, temp, humid|
+    @watcher.watch do |status, temp, humid|
       next unless status == Watcher::OK
 
       @living_room_temperature.value.set c_to_f temp
