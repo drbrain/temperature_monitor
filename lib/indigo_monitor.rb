@@ -8,8 +8,6 @@ class IndigoMonitor
   end
 
   def initialize
-    device = Dir['/dev/tty.usbserial*'].first
-    @watcher = Watcher.new device
     @app = Appscript.app 'IndigoServer'
 
     @living_room_temperature = get_variable 'Living_Room_Temperature'
@@ -30,12 +28,22 @@ class IndigoMonitor
   end
 
   def run
-    @watcher.watch do |status, temp, humid|
-      next unless status == Watcher::OK
+    loop do
+      watcher.watch do |status, temp, humid|
+        next unless status == Watcher::OK
 
-      @living_room_temperature.value.set c_to_f temp
-      @living_room_humidity.value.set humid
+        @living_room_temperature.value.set c_to_f temp
+        @living_room_humidity.value.set humid
+      end
     end
+  rescue
+    sleep 1
+    retry
+  end
+
+  def watcher
+    device = Dir['/dev/tty.usbserial*'].first
+    watcher = Watcher.new device
   end
 
 end
