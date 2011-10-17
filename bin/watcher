@@ -1,0 +1,8 @@
+#!/usr/local/bin/ruby
+
+require 'watcher'
+
+device = Dir['/dev/tty.usbserial*'].first
+watcher = Watcher.new device
+watcher.display_data
+

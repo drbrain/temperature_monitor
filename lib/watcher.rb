@@ -81,9 +81,3 @@ class Watcher
   end
 end
 
-if $0 == __FILE__ then
-  device = Dir['/dev/tty.usbserial*'].first
-  watcher = Watcher.new device
-  watcher.display_data
-end
-
