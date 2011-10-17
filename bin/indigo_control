@@ -1,0 +1,6 @@
+#!/usr/local/bin/ruby
+
+require 'indigo_control'
+
+IndigoControl.run ARGV
+
