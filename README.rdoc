@@ -1,11 +1,17 @@
-= Arduino + DHT22 + XBee Temperature Monitor
+= Arduino + DHT22 + XBee + Indigo Temperature Monitor
 
-This project allows you to monitor the temperature remotely.  The hardware used
-in this project includes:
+This project is used to control a gas fireplace in my house to maintain a
+constant temperature.
+
+== Wireless Thermometer
+
+The hardware for the thermometer includes:
 
 * {Arduino Uno}[http://www.sparkfun.com/products/10356]
 * {DHT22 Humidity & Temperature Sensor}[http://www.sparkfun.com/products/10167]
-* Two {XBees}[http://www.sparkfun.com/products/8664]
+* Two series 2 {XBees}[http://www.sparkfun.com/products/10417]
+  * {RP-SMA to U.FL cable}[http://www.sparkfun.com/products/662]
+  * {RP-SMA antenna} [http://www.sparkfun.com/products/145]
 * One {XBee Explorer}[http://www.sparkfun.com/products/8687]
 * One {XBee Adapter Kit}[http://www.adafruit.com/products/126]
 * {Jumper wires}[http://www.sparkfun.com/products/9387]
@@ -13,7 +19,7 @@ in this project includes:
 
 The XBee Adapter Kit was my first soldering attempt and I'm told I did a great
 job.  A PanaVise Junior and a Third Hand helped immensely, along with choosing
-a 1/64 inch soldering iron tip over the 1/32" tip that came with my soldering
+a 1/64" soldering iron tip over the 1/32" tip that came with my soldering
 iron.
 
 I also cut three jumper wires, stripped them and soldered them to the DHT22.
@@ -28,15 +34,55 @@ data pin to port 7 (from the {DHT22
 source}[https://github.com/nethoncho/Arduino-DHT22]) and the ground and power
 to the proper pins on the breadboard.
 
-The xbee_modem_setup.rb script was used to set up the to XBees to communicate with each other.  Be sure to use the Arduino XBee's serial number as the destination address of the XBee Explorer and vice versa.
+I use X-CTU from Digi International to set up the XBees.  The destination
+radio is using coordinator firmware while the monitor radio is using router
+firmware.
 
-The watch.rb script can be used to monitor the temperature the Arduino reads.
+Originally I bought XBees with the chip antennas, but they only had a range of
+about 3m without careful alignment of the antennas.  I replaced these with
+series 2 radios with U.FL connectors and antennas (even though that may be
+over-compensating).
 
-Excluding the cost of the soldering equipment, this project cost under $150.
+For the original series 1 antennas I used xbee_modem_setup.rb set up the to
+XBees to communicate with each other.  Be sure to use the Arduino XBee's
+serial number as the destination address of the XBee Explorer and vice versa.
+
+`bin/watch` can be used to monitor the temperature the Arduino reads.
+
+Excluding the cost of soldering equipment the wireless thermometer cost under
+$150.
+
+I plan to add two more thermometers to the setup which will cost another $250.
+Instead of the Arduino Uno I'll be using the cheaper Arduino Pro Mini now that
+my soldering skills are proven.
 
 Most of the software used in this project was already written by third-parties
 that I adapted to my needs.  The DHT22 library was changed from returning float
 to int (that I can decode on the ruby side).  xbee_modem_setup.rb was updated
 to work with a newer serialport gem for ruby and the documentation was
 reformatted.
+
+== Temperature Control
+
+`bin/indigo_monitor` reads data from the thermometer and populates a variable
+in Indigo.  Through Indigo's database support (I use Postgres) the values for
+the temperature are recorded.
+
+`bin/indigo_control` uses a PID controller (currently only Proportional
+control, I and D gains are set to zero) to turn the fireplace on and off.
+
+The desired temperature (set point) is controlled by a wall switch attached to
+an event group that raises or lowers the set point by one degree per press.
+
+Every minute the control loop reads the current temperature from Indigo, feeds
+that into the PID controller, checks the output value and turns the fireplace
+on if it is over 0.2 and off if it is under -0.2 (to avoid flutter in the
+temperature measurement).  The current control position is also recorded in
+Indigo for debugging purposes.
+
+== Temperature Graph
+
+For debugging purposes I also have `temperature_graph.r`.  This R script
+graphs the last day's data from Indigo's Postgres database.  You can see a
+sample graph here:  http://i.imgur.com/SDUUS.jpg
 
