@@ -18,9 +18,9 @@ class IndigoControl
     @pid = PID.new get_set_point
 
     # Ziegler-Nichols
-    @pid.proportional_gain = 1.0 * 0.6
-    @pid.integral_gain = 2 * @pid.proportional_gain / 60
-    @pid.derivative_gain = 0.6 * @pid.integral_gain / 8
+    #@pid.proportional_gain = 1.0 * 0.6
+    #@pid.integral_gain = 2 * @pid.proportional_gain / 60
+    #@pid.derivative_gain = 0.6 * @pid.integral_gain / 8
   end
 
   def get_set_point

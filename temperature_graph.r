@@ -30,11 +30,12 @@ WHERE ts > now() - interval '24 hours'
 ORDER BY time")
 
 desired <- query(con, "
-SELECT date_trunc('minute', ts) as time, max(temperature) as temp
+SELECT date_trunc('minute', ts) as time,
+       last_value(temperature) OVER
+         (PARTITION BY date_trunc('minute', ts)) as temp
 FROM desired_temperatures 
 WHERE ts > now() - interval '24 hours'
-GROUP BY date_trunc('minute', ts)
-ORDER BY time")
+ORDER BY ts")
 
 fire_on <- query(con, "
 SELECT ts as time
