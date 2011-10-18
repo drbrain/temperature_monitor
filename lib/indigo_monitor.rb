@@ -32,7 +32,9 @@ class IndigoMonitor
       watcher.watch do |status, temp, humid|
         next unless status == Watcher::OK
 
-        @living_room_temperature.value.set c_to_f temp
+        temp = c_to_f temp
+        temp = "%5.1f" % temp
+        @living_room_temperature.value.set temp
         @living_room_humidity.value.set humid
       end
     end
