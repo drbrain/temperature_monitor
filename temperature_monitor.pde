@@ -22,7 +22,6 @@ void setup(void)
 void loop(void)
 {
   DHT22_ERROR_t error_code;
-  char out[40];
 
   delay(interval * 1000);
   error_code = temp_sensor.readData();
