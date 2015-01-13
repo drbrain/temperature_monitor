@@ -4,7 +4,7 @@
 #define XBee_rx_PIN 2
 #define XBee_tx_PIN 3
 #define DHT22_PIN 4
-#define interval 2
+#define interval 60
 
 DHT22 temp_sensor(DHT22_PIN);
 SoftwareSerial XBee(XBee_rx_PIN, XBee_tx_PIN);

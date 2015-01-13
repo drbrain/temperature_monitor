@@ -39,6 +39,7 @@ The Arduino OneWire lib
 http://sheepdogguides.com/arduino/ar3ne1humDHT11.htm
 
 */
+
 #include "DHT22.h"
 
 #if (ARDUINO >= 100)
