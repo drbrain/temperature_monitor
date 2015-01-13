@@ -39,12 +39,17 @@ The Arduino OneWire lib
 http://sheepdogguides.com/arduino/ar3ne1humDHT11.htm
 
 */
-
 #include "DHT22.h"
-#include "pins_arduino.h"
+
+#if (ARDUINO >= 100)
+ #include <Arduino.h>
+#else
+ #include <WProgram.h>
+ #include <pins_arduino.h>
+#endif
+
 
 extern "C" {
-#include "WConstants.h"
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
