@@ -3,7 +3,7 @@
 
 #define XBee_rx_PIN 2
 #define XBee_tx_PIN 3
-#define DHT22_PIN 7
+#define DHT22_PIN 4
 #define interval 2
 
 DHT22 temp_sensor(DHT22_PIN);
