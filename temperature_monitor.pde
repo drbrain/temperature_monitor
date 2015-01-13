@@ -40,7 +40,7 @@ void loop(void)
 }
 
 void write_int(int value) {
-  XBee.print(value >> 8,   BYTE);
-  XBee.print(value & 0xff, BYTE);
+  XBee.write(value >> 8);
+  XBee.write(value & 0xff);
 }
 
