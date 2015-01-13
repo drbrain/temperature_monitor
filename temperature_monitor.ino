@@ -4,7 +4,7 @@
 #define XBee_rx_PIN 2
 #define XBee_tx_PIN 3
 #define DHT22_PIN 4
-#define interval 60
+#define interval 15
 
 DHT22 temp_sensor(DHT22_PIN);
 SoftwareSerial XBee(XBee_rx_PIN, XBee_tx_PIN);
@@ -17,13 +17,14 @@ void setup(void)
   XBee.begin(9600);
 
   Serial.begin(9600);
+
+  delay(2000);
 }
 
 void loop(void)
 {
   DHT22_ERROR_t error_code;
 
-  delay(interval * 1000);
   error_code = temp_sensor.readData();
 
   write_int(0xFF00); // sync
@@ -37,6 +38,8 @@ void loop(void)
       write_int(temp_sensor.getHumidity());
       break;
   }
+
+  delay(interval * 1000);
 }
 
 void write_int(int value) {
