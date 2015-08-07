@@ -18,14 +18,14 @@ query <- function(con, query) {
 # fetch data
 living_room <- query(con, "
 SELECT date_trunc('minute', ts) as time, avg(temperature) as temp
-FROM living_room_temperatures
+FROM variable_history_106354805
 WHERE ts > now() - interval '24 hours'
 GROUP BY date_trunc('minute', ts)
 ORDER BY time")
 
 outside <- query(con, "
 SELECT ts as time, temperature as temp
-FROM outside_temperatures
+FROM variable_history_343161330
 WHERE ts > now() - interval '24 hours'
 ORDER BY time")
 
@@ -33,20 +33,20 @@ desired <- query(con, "
 SELECT date_trunc('minute', ts) as time,
        last_value(temperature) OVER
          (PARTITION BY date_trunc('minute', ts)) as temp
-FROM desired_temperatures
+FROM variable_history_1868457272
 WHERE ts > now() - interval '24 hours'
 ORDER BY ts")
 
 fire_on <- query(con, "
 SELECT ts as time
-FROM device_history_multi_io
+FROM device_history_258380618
 WHERE dev_name = 'Fireplace'
   AND output_binary_states = '1'
   AND ts > now() - interval '24 hours'")
 
 fire_off <- query(con, "
 SELECT ts as time
-FROM device_history_multi_io
+FROM device_history_258380618
 WHERE dev_name = 'Fireplace'
   AND output_binary_states = '0'
   AND ts > now() - interval '24 hours'")
