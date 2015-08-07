@@ -1,5 +1,7 @@
 #!/usr/local/bin/ruby
 
+$0 = 'watcher'
+
 require 'watcher'
 
 device = Dir['/dev/tty.usbserial*'].first

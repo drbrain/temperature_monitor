@@ -1,5 +1,7 @@
 #!/usr/local/bin/ruby
 
+$0 = 'indigo_monitor'
+
 require 'indigo_monitor'
 
 IndigoMonitor.run ARGV
