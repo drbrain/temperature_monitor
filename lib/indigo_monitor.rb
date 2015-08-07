@@ -1,14 +1,21 @@
 require 'watcher'
 require 'appscript'
 
+$stdout.sync = true
+$stderr.sync = true
+
 class IndigoMonitor
 
   def self.run args = ARGV
     new.run
+  rescue => e
+    puts "#{e.message} (#{e.class})"
+    sleep 60
+    retry
   end
 
   def initialize
-    @app = Appscript.app 'IndigoServer'
+    @app = Appscript.app '/Library/Application Support/Perceptive Automation/Indigo 6/IndigoServer.app'
 
     @living_room_temperature = get_variable 'Living_Room_Temperature'
     @living_room_humidity = get_variable 'Living_Room_Humidity'
@@ -38,13 +45,14 @@ class IndigoMonitor
         @living_room_humidity.value.set humid
       end
     end
-  rescue
+  rescue => e
+    puts "#{e.message} (#{e.class})"
     sleep 1
     retry
   end
 
   def watcher
-    device = Dir['/dev/tty.usbserial*'].first
+    device = Dir['/dev/tty.usbserial-A8004Zxd'].first
     watcher = Watcher.new device
   end
 

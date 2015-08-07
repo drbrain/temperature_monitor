@@ -5,10 +5,13 @@ class IndigoControl
 
   def self.run args = ARGV
     new.run
+  rescue
+    sleep 60
+    retry
   end
 
   def initialize
-    @app = Appscript.app 'IndigoServer'
+    @app = Appscript.app '/Library/Application Support/Perceptive Automation/Indigo 6/IndigoServer.app'
 
     @fireplace = @app.devices['Fireplace']
     @living_room_temperature = get_variable 'Living_Room_Temperature'
