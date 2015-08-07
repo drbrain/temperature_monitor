@@ -3,7 +3,7 @@ library("DBI")
 library("RPostgreSQL")
 
 drv <- dbDriver("PostgreSQL")
-con <- dbConnect(drv, dbname="indigo", user="indigo", host="localhost")
+con <- dbConnect(drv, dbname="indigo_history", user="indigo", host="emerson.local")
 
 query <- function(con, query) {
   rs <- dbSendQuery(con, query)
