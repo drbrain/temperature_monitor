@@ -17,21 +17,21 @@ query <- function(con, query) {
 
 # fetch data
 living_room <- query(con, "
-SELECT date_trunc('minute', ts) as time, avg(temperature) as temp
+SELECT date_trunc('minute', ts) as time, avg(CAST(value AS float)) as temp
 FROM variable_history_106354805
 WHERE ts > now() - interval '24 hours'
 GROUP BY date_trunc('minute', ts)
 ORDER BY time")
 
 outside <- query(con, "
-SELECT ts as time, temperature as temp
+SELECT ts as time, CAST(value AS float) as temp
 FROM variable_history_343161330
 WHERE ts > now() - interval '24 hours'
 ORDER BY time")
 
 desired <- query(con, "
 SELECT date_trunc('minute', ts) as time,
-       last_value(temperature) OVER
+       last_value(CAST(value AS float)) OVER
          (PARTITION BY date_trunc('minute', ts)) as temp
 FROM variable_history_1868457272
 WHERE ts > now() - interval '24 hours'
@@ -40,15 +40,13 @@ ORDER BY ts")
 fire_on <- query(con, "
 SELECT ts as time
 FROM device_history_258380618
-WHERE dev_name = 'Fireplace'
-  AND output_binary_states = '1'
+WHERE binaryoutputsall = '1'
   AND ts > now() - interval '24 hours'")
 
 fire_off <- query(con, "
 SELECT ts as time
 FROM device_history_258380618
-WHERE dev_name = 'Fireplace'
-  AND output_binary_states = '0'
+WHERE binaryoutputsall = '0'
   AND ts > now() - interval '24 hours'")
 
 # plot info
@@ -59,7 +57,7 @@ colors    <- c("black", "darkgreen", "red")
 plot_char <- c("", "o", "o")
 line_type <- c(1, 0, 1)
 
-png(filename="/Users/drbrain/Sites/temperature.png",
+png(filename="~/Sites/temperature.png",
     height=750, width=1000, bg="white")
 
 # living_room
