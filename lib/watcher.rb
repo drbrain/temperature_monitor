@@ -13,7 +13,6 @@ class Watcher
   TOO_QUICK = 7
 
   def initialize device
-    puts "listening on #{device}"
     @xbee = SerialPort.new device, 9600, 8, 1, SerialPort::NONE
   end
 
@@ -51,32 +50,38 @@ class Watcher
         humid = get_int / 10.0
       end
 
+      display_status status, temp, humid
+
       yield status, temp, humid
     end
   end
 
   def display_data
     watch do |status, temp, humid|
-      case status
-      when OK then
-        puts "%s %4gC %4g%%" % [Time.now, temp, humid]
-      when BUS_HUNG then
-        puts "Bus hung"
-      when NOT_PRESENT then
-        puts "Not present"
-      when ACK_TIMEOUT then
-        puts "ACK timeout"
-      when SYNC_TIMEOUT then
-        puts "Sync timeout"
-      when DATA_TIMEOUT then
-        puts "Data timeout"
-      when CHECKSUM then
-        puts "Checksum error"
-      when TOO_QUICK then
-        puts "Polled too quick"
-      else
-        puts "Garbage status: #{status.inspect}"
-      end
+      display_status status, temp, humid
+    end
+  end
+
+  def display_status status, temp, humid
+    case status
+    when OK then
+      puts "OK: %4gC %4g%%" % [temp, humid]
+    when BUS_HUNG then
+      puts "Bus hung"
+    when NOT_PRESENT then
+      puts "Not present"
+    when ACK_TIMEOUT then
+      puts "ACK timeout"
+    when SYNC_TIMEOUT then
+      puts "Sync timeout"
+    when DATA_TIMEOUT then
+      puts "Data timeout"
+    when CHECKSUM then
+      puts "Checksum error"
+    when TOO_QUICK then
+      puts "Polled too quick"
+    else
+      puts "Garbage status: #{status.inspect}"
     end
   end
 end
