@@ -7,9 +7,9 @@ con <- dbConnect(drv, dbname="indigo", user="indigo", host="localhost")
 
 query <- function(con, query) {
   rs <- dbSendQuery(con, query)
-  
+
   data <- fetch(rs, n = -1)
-  
+
   dbClearResult(rs)
 
   data
@@ -33,7 +33,7 @@ desired <- query(con, "
 SELECT date_trunc('minute', ts) as time,
        last_value(temperature) OVER
          (PARTITION BY date_trunc('minute', ts)) as temp
-FROM desired_temperatures 
+FROM desired_temperatures
 WHERE ts > now() - interval '24 hours'
 ORDER BY ts")
 
