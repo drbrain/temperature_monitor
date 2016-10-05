@@ -23,6 +23,27 @@ WHERE ts > now() - interval '24 hours'
 GROUP BY date_trunc('minute', ts)
 ORDER BY time")
 
+bedroom <- query(con, "
+SELECT date_trunc('minute', ts) as time, sensorvalue as temp
+FROM device_history_1818915597
+WHERE ts > now() - interval '24 hours'
+  AND sensorvalue_ui LIKE '%F'
+ORDER BY time")
+
+master_bath <- query(con, "
+SELECT date_trunc('minute', ts) as time, sensorvalue as temp
+FROM device_history_286865561
+WHERE ts > now() - interval '24 hours'
+  AND sensorvalue_ui LIKE '%F'
+ORDER BY time")
+
+downstairs <- query(con, "
+SELECT date_trunc('minute', ts) as time, sensorvalue as temp
+FROM device_history_1249580773
+WHERE ts > now() - interval '24 hours'
+  AND sensorvalue_ui LIKE '%F'
+ORDER BY time")
+
 outside <- query(con, "
 SELECT ts as time, CAST(value AS float) as temp
 FROM variable_history_343161330
@@ -49,13 +70,24 @@ FROM device_history_258380618
 WHERE binaryoutputsall = '0'
   AND ts > now() - interval '24 hours'")
 
+
 # plot info
 x_range   <- as.POSIXct(range(living_room$time, outside$time),
                         "hours", tz="PST")
 y_range   <- range(living_room$temp, outside$temp)
-colors    <- c("black", "darkgreen", "red")
-plot_char <- c("", "o", "o")
-line_type <- c(1, 0, 1)
+
+titles <- c(
+  "Living Room",
+  "Desired",
+  "Outside",
+  "Downstairs",
+  "Bedroom",
+  "Master Bath"
+)
+
+colors    <- c("black", "darkgreen", "red", "chocolate", "lightsalmon", "gray50")
+plot_char <- c(0, 1, 1, 4, 4, 4)
+line_type <- c(1, 0, 1, 1, 1, 1)
 
 png(filename="~/Sites/temperature.png",
     height=750, width=1000, bg="white")
@@ -66,11 +98,14 @@ plot(living_room$time, smooth(living_room$temp),
      ann=FALSE, axes=FALSE)
 
 # desired
-points(desired$time, desired$temp, pch=plot_char[2], col=colors[2])
-text(desired$time, desired$temp, desired$temp, pos=4, col=colors[2])
+points(desired$time,    desired$temp,     col=colors[2], pch=plot_char[2])
+text(desired$time,      desired$temp,     desired$temp, col=colors[2], pos=4)
 
 # outside
-lines(outside$time, outside$temp, type=plot_char[3], col=colors[3])
+lines(outside$time,     outside$temp,     col=colors[3], pch=plot_char[3])
+lines(downstairs$time,  downstairs$temp,  col=colors[4], pch=plot_char[4])
+lines(bedroom$time,     bedroom$temp,     col=colors[5], pch=plot_char[5])
+lines(master_bath$time, master_bath$temp, col=colors[6], pch=plot_char[6])
 
 # fire on vertical lines
 lapply(fire_on$time, function(x) abline(v=x, col="red"))
@@ -94,7 +129,7 @@ title(ylab="Degrees F")
 
 # legend
 legend(min(living_room$time), y_range[2],
-       c("Living Room", "Desired", "Outside"), col=colors,
+       titles, col=colors,
        pch=plot_char, lty=line_type)
 
 dev.off()
