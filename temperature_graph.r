@@ -104,10 +104,10 @@ points(desired$time,    desired$temp,     col=colors[2], pch=plot_char[2])
 text(desired$time,      desired$temp,     desired$temp, col=colors[2], pos=4)
 
 # outside
-lines(outside$time,     outside$temp,     col=colors[3], pch=plot_char[3])
-lines(downstairs$time,  downstairs$temp,  col=colors[4], pch=plot_char[4])
-lines(bedroom$time,     bedroom$temp,     col=colors[5], pch=plot_char[5])
-lines(master_bath$time, master_bath$temp, col=colors[6], pch=plot_char[6])
+lines(outside$time,     outside$temp,     col=colors[3], pch=plot_char[3], type="o")
+lines(downstairs$time,  downstairs$temp,  col=colors[4], pch=plot_char[4], type="o")
+lines(bedroom$time,     bedroom$temp,     col=colors[5], pch=plot_char[5], type="o")
+lines(master_bath$time, master_bath$temp, col=colors[6], pch=plot_char[6], type="o")
 
 # fire on vertical lines
 lapply(fire_on$time, function(x) abline(v=x, col="red"))
