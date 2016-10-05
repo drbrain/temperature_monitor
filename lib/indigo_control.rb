@@ -1,13 +1,19 @@
 require 'pid'
 require 'appscript'
+require 'syslog'
 
 class IndigoControl
 
   def self.run args = ARGV
-    new.run
-  rescue
-    sleep 60
-    retry
+    Syslog.open 'indigo_control'
+
+    begin
+      new.run
+    rescue => e
+      Syslog.log Syslog::LOG_ERR, "#{e.class}: #{e.message}"
+      sleep 60
+      retry
+    end
   end
 
   def initialize
@@ -60,7 +66,7 @@ class IndigoControl
       @fire_position.value.set position
       @pid.set_point = get_set_point
 
-      puts "position: %3.2f set point: %3.2f" % [position, @pid.set_point]
+      Syslog.log Syslog::LOG_NOTICE, "position: %3.2f set point: %3.2f", position, @pid.set_point
 
       if position < -0.2 then
         off

@@ -1,4 +1,5 @@
 require 'watcher'
+require 'syslog'
 require 'appscript'
 
 $stdout.sync = true
@@ -7,11 +8,17 @@ $stderr.sync = true
 class IndigoMonitor
 
   def self.run args = ARGV
-    new.run
-  rescue => e
-    puts "#{e.message} (#{e.class})"
-    sleep 60
-    retry
+    Syslog.open 'indigo_monitor'
+
+    Syslog.log Syslog::LOG_NOTICE, "startup"
+
+    begin
+      new.run
+    rescue => e
+      Syslog.log Syslog::LOG_ERR, "#{e.message} (#{e.class})"
+      sleep 60
+      retry
+    end
   end
 
   def initialize
@@ -35,8 +42,11 @@ class IndigoMonitor
   end
 
   def run
+    Syslog.log Syslog::LOG_NOTICE, "loop start"
+
     loop do
       watcher.watch do |status, temp, humid|
+        Syslog.log Syslog::LOG_NOTICE, "status: #{status} temp: #{temp} humid: #{humid}"
         next unless status == Watcher::OK
 
         temp = c_to_f temp
@@ -46,7 +56,7 @@ class IndigoMonitor
       end
     end
   rescue => e
-    puts "#{e.message} (#{e.class})"
+    Syslog.log Syslog::LOG_ERR, "#{e.message} (#{e.class})"
     sleep 1
     retry
   end
