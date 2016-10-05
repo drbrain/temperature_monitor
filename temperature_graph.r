@@ -130,7 +130,7 @@ title(main="Home Temperature", font.main=4)
 title(ylab="Degrees F")
 
 # legend
-legend(min(living_room$time), y_range[2],
+legend('bottomright', y_range[1],
        titles, col=colors,
        pch=plot_char, lty=line_type)
 
