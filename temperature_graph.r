@@ -72,9 +72,11 @@ WHERE binaryoutputsall = '0'
 
 
 # plot info
-x_range   <- as.POSIXct(range(living_room$time, outside$time),
+x_range   <- as.POSIXct(range(living_room$time, outside$time, downstairs$time,
+bedroom$time, master_bath$time),
                         "hours", tz="PST")
-y_range   <- range(living_room$temp, outside$temp)
+y_range   <- range(living_room$temp, outside$temp, downstairs$temp,
+bedroom$temp, master_bath$temp)
 
 titles <- c(
   "Living Room",
