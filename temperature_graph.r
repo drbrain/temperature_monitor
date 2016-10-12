@@ -1,6 +1,7 @@
 require(graphics)
 library("DBI")
 library("RPostgreSQL")
+library("scales")
 
 drv <- dbDriver("PostgreSQL")
 con <- dbConnect(drv, dbname="indigo_history", user="indigo", host="localhost")
@@ -58,18 +59,35 @@ FROM variable_history_1868457272
 WHERE ts > now() - interval '24 hours'
 ORDER BY ts")
 
-fire_on <- query(con, "
-SELECT ts as time
+fire <- query(con, "
+SELECT ts as time,
+       cast(binaryoutputsall as boolean) as on
 FROM device_history_258380618
-WHERE binaryoutputsall = '1'
-  AND ts > now() - interval '24 hours'")
+WHERE ts > now() - interval '24 hours'")
 
-fire_off <- query(con, "
-SELECT ts as time
-FROM device_history_258380618
-WHERE binaryoutputsall = '0'
-  AND ts > now() - interval '24 hours'")
+# calculate fire on/off box dimensions
+now <- Sys.time()
 
+fire_starts_on <- !fire[1,]$on
+fire_ends_on   <-  fire[nrow(fire),]$on
+
+if (fire_starts_on) {
+  start_on <- data.frame(time=now - 86400, on=TRUE)
+
+  fire <- rbind(start_on, fire)
+}
+
+if (fire_ends_on) {
+  end_off <- data.frame(time=now, on=FALSE)
+
+  fire <- rbind(fire, end_off)
+}
+
+fire_boxes <- fire[(filter(fire,c(-1,1))!=0)[,2],]
+fire_boxes <- fire_boxes[complete.cases(fire_boxes),]
+fire_boxes <- rbind(fire_boxes, fire[nrow(fire),])
+
+fire_on_off <- matrix(fire_boxes$time, ncol=2, byrow=TRUE)
 
 # plot info
 x_range   <- as.POSIXct(range(living_room$time, outside$time, downstairs$time,
@@ -80,40 +98,40 @@ bedroom$temp, master_bath$temp)
 
 titles <- c(
   "Living Room",
-  "Desired",
   "Outside",
   "Downstairs",
   "Bedroom",
-  "Master Bath"
+  "Master Bath",
+  "Desired"
 )
 
-colors    <- c("black", "darkgreen", "red", "chocolate", "lightsalmon", "gray50")
-plot_char <- c(0, 1, 1, 4, 4, 4)
-line_type <- c(1, 0, 1, 1, 1, 1)
+colors    <- c("black", "red", "chocolate", "lightsalmon", "gray50", "darkgreen")
+plot_char <- c(0, 1, 4, 4, 4, 1)
+line_type <- c(1, 1, 1, 1, 1, 0)
 
 png(filename="~/Sites/temperature.png",
     height=750, width=1000, bg="white")
 
-# living_room
-plot(living_room$time, smooth(living_room$temp),
-     ylim=y_range, pch=plot_char[1], col=colors[1], type="l",
-     ann=FALSE, axes=FALSE)
+plot.new()
+plot.window(x_range, y_range)
+
+# fire on/off boxes on background
+draw_fire_box <- function(row) {
+  rect(row[1], min(y_range), row[2], max(y_range), col=alpha("red", 0.15), border=0)
+}
+
+apply(fire_on_off, 1, draw_fire_box)
+
+# lines
+lines(living_room$time, smooth(living_room$temp), col=colors[1], pch=plot_char[1], type="l")
+lines(outside$time,     outside$temp,             col=colors[2], pch=plot_char[2], type="o")
+lines(downstairs$time,  downstairs$temp,          col=colors[3], pch=plot_char[3], type="o")
+lines(bedroom$time,     bedroom$temp,             col=colors[4], pch=plot_char[4], type="o")
+lines(master_bath$time, master_bath$temp,         col=colors[5], pch=plot_char[5], type="o")
 
 # desired
-points(desired$time,    desired$temp,     col=colors[2], pch=plot_char[2])
-text(desired$time,      desired$temp,     desired$temp, col=colors[2], pos=4)
-
-# outside
-lines(outside$time,     outside$temp,     col=colors[3], pch=plot_char[3], type="o")
-lines(downstairs$time,  downstairs$temp,  col=colors[4], pch=plot_char[4], type="o")
-lines(bedroom$time,     bedroom$temp,     col=colors[5], pch=plot_char[5], type="o")
-lines(master_bath$time, master_bath$temp, col=colors[6], pch=plot_char[6], type="o")
-
-# fire on vertical lines
-lapply(fire_on$time, function(x) abline(v=x, col="red"))
-
-# fire off vertical lines
-lapply(fire_off$time, function(x) abline(v=x, col="blue"))
+points(desired$time,    desired$temp,             col=colors[6], pch=plot_char[6])
+text(desired$time, desired$temp, desired$temp, col=colors[6], pos=4)
 
 # box
 box()
