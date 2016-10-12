@@ -136,9 +136,11 @@ text(desired$time, desired$temp, desired$temp, col=colors[6], pos=4)
 # box
 box()
 
-# x axis + one hour
-axis.POSIXct(1, at=seq(x_range[1], x_range[2] + 3600, by="hour"),
-             format="%H:00", las=1)
+# x axis
+x_axis_range <- round(x_range, "hours")
+
+axis.POSIXct(1, at=seq(x_axis_range[1], x_axis_range[2], by="hour"),
+             format="%H:%M", las=1)
 
 # y axis
 axis(2, at=seq(y_range[1], y_range[2], by=2), las=1)
