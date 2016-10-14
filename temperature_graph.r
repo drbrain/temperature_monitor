@@ -66,28 +66,30 @@ FROM device_history_258380618
 WHERE ts > now() - interval '24 hours'")
 
 # calculate fire on/off box dimensions
-now <- Sys.time()
+if (nrow(fire) > 0) {
+  now <- Sys.time()
 
-fire_starts_on <- !fire[1,]$on
-fire_ends_on   <-  fire[nrow(fire),]$on
+  fire_starts_on <- !fire[1,]$on
+  fire_ends_on   <-  fire[nrow(fire),]$on
 
-if (fire_starts_on) {
-  start_on <- data.frame(time=now - 86400, on=TRUE)
+  if (fire_starts_on) {
+    start_on <- data.frame(time=now - 86400, on=TRUE)
 
-  fire <- rbind(start_on, fire)
+    fire <- rbind(start_on, fire)
+  }
+
+  if (fire_ends_on) {
+    end_off <- data.frame(time=now, on=FALSE)
+
+    fire <- rbind(fire, end_off)
+  }
+
+  fire_boxes <- fire[(filter(fire,c(-1,1))!=0)[,2],]
+  fire_boxes <- fire_boxes[complete.cases(fire_boxes),]
+  fire_boxes <- rbind(fire_boxes, fire[nrow(fire),])
+
+  fire_on_off <- matrix(fire_boxes$time, ncol=2, byrow=TRUE)
 }
-
-if (fire_ends_on) {
-  end_off <- data.frame(time=now, on=FALSE)
-
-  fire <- rbind(fire, end_off)
-}
-
-fire_boxes <- fire[(filter(fire,c(-1,1))!=0)[,2],]
-fire_boxes <- fire_boxes[complete.cases(fire_boxes),]
-fire_boxes <- rbind(fire_boxes, fire[nrow(fire),])
-
-fire_on_off <- matrix(fire_boxes$time, ncol=2, byrow=TRUE)
 
 # plot info
 x_range   <- as.POSIXct(range(living_room$time, outside$time, downstairs$time,
@@ -120,7 +122,9 @@ draw_fire_box <- function(row) {
   rect(row[1], min(y_range), row[2], max(y_range), col=alpha("red", 0.15), border=0)
 }
 
-apply(fire_on_off, 1, draw_fire_box)
+if (nrow(fire) > 0) {
+  apply(fire_on_off, 1, draw_fire_box)
+}
 
 # lines
 lines(living_room$time, smooth(living_room$temp), col=colors[1], pch=plot_char[1], type="l")
