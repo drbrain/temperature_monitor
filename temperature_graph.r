@@ -160,7 +160,7 @@ axis.POSIXct(1, at=seq(x_axis_range[1], x_axis_range[2], by="hour"),
              format="%H:%M", las=1)
 
 # y axis
-axis(2, at=seq(y_range[1], y_range[2], by=2), las=1)
+axis(4, at=seq(y_range[1], y_range[2], by=2), las=1)
 
 # titles
 title(main="Home Temperature", font.main=4)
