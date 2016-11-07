@@ -143,6 +143,24 @@ png(filename="~/Sites/temperature.png",
 plot.new()
 plot.window(x_range, y_range)
 
+# box
+box()
+
+# x axis
+x_axis_range <- round(x_range, "hours")
+
+axis.POSIXct(1, at=seq(x_axis_range[1], x_axis_range[2], by="hour"),
+             format="%H:%M", las=1)
+
+# y axis
+axis(4, at=seq(y_range[1], y_range[2], by=2), las=1)
+
+abline(h=seq(y_range[1], y_range[2], by=1), col="gray", lty="dotted")
+
+# titles
+title(main="Home Temperature", font.main=4)
+title(ylab="Degrees F")
+
 # fire on/off boxes on background
 draw_fire_box <- function(row) {
   rect(row[1], min(y_range), row[2], max(y_range), col=alpha("red", 0.15), border=0)
@@ -168,22 +186,6 @@ points(desired$time,    desired$temp,             col=colors[8], pch=plot_char[8
 latest_living_room <- tail(living_room, 1)
 text(latest_living_room$time, latest_living_room$temp, latest_living_room$temp, col=colors[1], pos=4)
 text(desired$time, desired$temp, desired$temp, col=colors[8], pos=4)
-
-# box
-box()
-
-# x axis
-x_axis_range <- round(x_range, "hours")
-
-axis.POSIXct(1, at=seq(x_axis_range[1], x_axis_range[2], by="hour"),
-             format="%H:%M", las=1)
-
-# y axis
-axis(4, at=seq(y_range[1], y_range[2], by=2), las=1)
-
-# titles
-title(main="Home Temperature", font.main=4)
-title(ylab="Degrees F")
 
 # legend
 legend('bottomleft', y_range[1],
