@@ -186,7 +186,7 @@ title(main="Home Temperature", font.main=4)
 title(ylab="Degrees F")
 
 # legend
-legend('bottomright', y_range[1],
+legend('bottomleft', y_range[1],
        titles, col=colors,
        pch=plot_char, lty=line_type)
 
