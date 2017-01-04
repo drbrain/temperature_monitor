@@ -22,7 +22,7 @@ class IndigoMonitor
   end
 
   def initialize
-    @app = Appscript.app '/Library/Application Support/Perceptive Automation/Indigo 6/IndigoServer.app'
+    @app = Appscript.app '/Library/Application Support/Perceptive Automation/Indigo 7/IndigoServer.app'
 
     @living_room_temperature = get_variable 'Living_Room_Temperature'
     @living_room_humidity = get_variable 'Living_Room_Humidity'
