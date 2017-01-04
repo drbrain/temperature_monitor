@@ -18,50 +18,50 @@ query <- function(con, query) {
 
 # fetch data
 living_room <- query(con, "
-SELECT date_trunc('minute', ts) as time, avg(CAST(value AS float)) as temp
-FROM variable_history_106354805
+SELECT date_trunc('minute', ts) as time, sensorvalue as temp
+FROM device_history_88648649
 WHERE ts > now() - interval '24 hours'
-GROUP BY date_trunc('minute', ts)
+  AND sensorvalue_ui LIKE '%F'
 ORDER BY time")
 
 bedroom <- query(con, "
 SELECT date_trunc('minute', ts) as time, sensorvalue as temp
-FROM device_history_1818915597
+FROM device_history_1448687572
 WHERE ts > now() - interval '24 hours'
   AND sensorvalue_ui LIKE '%F'
 ORDER BY time")
 
 master_bath <- query(con, "
 SELECT date_trunc('minute', ts) as time, sensorvalue as temp
-FROM device_history_286865561
+FROM device_history_1973994342
 WHERE ts > now() - interval '24 hours'
   AND sensorvalue_ui LIKE '%F'
 ORDER BY time")
 
 downstairs <- query(con, "
 SELECT date_trunc('minute', ts) as time, sensorvalue as temp
-FROM device_history_1249580773
+FROM device_history_613907848
 WHERE ts > now() - interval '24 hours'
   AND sensorvalue_ui LIKE '%F'
 ORDER BY time")
 
 garage <- query(con, "
 SELECT date_trunc('minute', ts) as time, sensorvalue as temp
-FROM device_history_591994489
+FROM device_history_1601325516
 WHERE ts > now() - interval '24 hours'
   AND sensorvalue_ui LIKE '%F'
 ORDER BY time")
 
 outside <- query(con, "
 SELECT date_trunc('minute', ts) as time, sensorvalue as temp
-FROM device_history_724806355
+FROM device_history_263693348
 WHERE ts > now() - interval '24 hours'
   AND sensorvalue_ui LIKE '%F'
 ORDER BY time")
 
 kbfi <- query(con, "
-SELECT ts as time, CAST(value AS float) as temp
-FROM variable_history_343161330
+SELECT ts as time, CAST(temperaturef AS float) as temp
+FROM device_history_1095803503
 WHERE ts > now() - interval '24 hours'
 ORDER BY time")
 
