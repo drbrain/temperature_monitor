@@ -1,20 +1,6 @@
 require(graphics)
-library("DBI")
-library("RPostgreSQL")
+source("db.r")
 library("scales")
-
-drv <- dbDriver("PostgreSQL")
-con <- dbConnect(drv, dbname="indigo_history", user="indigo", host="localhost")
-
-query <- function(con, query) {
-  rs <- dbSendQuery(con, query)
-
-  data <- fetch(rs, n = -1)
-
-  dbClearResult(rs)
-
-  data
-}
 
 # fetch data
 living_room <- query(con, "
