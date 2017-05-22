@@ -109,19 +109,19 @@ y_range   <- range(living_room$temp,
                    outside$temp)
 
 titles <- c(
-  "Living Room",
-  "KBFI",
-  "Downstairs",
+  "Desired",
   "Bedroom",
   "Master Bath",
+  "Living Room",
+  "Downstairs",
   "Garage",
   "Outside",
-  "Desired"
+  "KBFI"
 )
 
-colors    <- c("black", "red", "chocolate", "lightsalmon", "gray50", "red4", "darkred", "darkgreen")
-plot_char <- c(0, 1, 6, 2, 2, 6, 1, 1)
-line_type <- c(1, 1, 1, 1, 1, 1, 1, 0)
+colors    <- c("darkgreen", "chocolate", "lightsalmon", "black", "gray50", "red4", "darkred", "red")
+plot_char <- c(1, 2, 2, 0, 6, 6, 1, 1)
+line_type <- c(0, 1, 1, 1, 1, 1, 1, 1)
 
 png(filename="~/Sites/temperature.png",
     height=750, width=1000, bg="white")
@@ -157,21 +157,20 @@ if (nrow(fire) > 0) {
 }
 
 # lines
-lines(living_room$time, smooth(living_room$temp), col=colors[1], pch=plot_char[1], type="l")
-
-lines(kbfi$time,        kbfi$temp,                col=colors[2], pch=plot_char[2], type="o")
-lines(downstairs$time,  downstairs$temp,          col=colors[3], pch=plot_char[3], type="o")
-lines(bedroom$time,     bedroom$temp,             col=colors[4], pch=plot_char[4], type="o")
-lines(master_bath$time, master_bath$temp,         col=colors[5], pch=plot_char[5], type="o")
+lines(bedroom$time,     bedroom$temp,             col=colors[2], pch=plot_char[2], type="o")
+lines(master_bath$time, master_bath$temp,         col=colors[3], pch=plot_char[3], type="o")
+lines(living_room$time, smooth(living_room$temp), col=colors[4], pch=plot_char[4], type="l")
+lines(downstairs$time,  downstairs$temp,          col=colors[5], pch=plot_char[5], type="o")
 lines(garage$time,      garage$temp,              col=colors[6], pch=plot_char[6], type="o")
 lines(outside$time,     outside$temp,             col=colors[7], pch=plot_char[7], type="o")
+lines(kbfi$time,        kbfi$temp,                col=colors[8], pch=plot_char[8], type="o")
 
 # desired
-points(desired$time,    desired$temp,             col=colors[8], pch=plot_char[8])
+points(desired$time,    desired$temp,             col=colors[1], pch=plot_char[1])
+text(desired$time, desired$temp, desired$temp, col=colors[1], pos=4)
 
 latest_living_room <- tail(living_room, 1)
-text(latest_living_room$time, latest_living_room$temp, latest_living_room$temp, col=colors[1], pos=4)
-text(desired$time, desired$temp, desired$temp, col=colors[8], pos=4)
+text(latest_living_room$time, latest_living_room$temp, latest_living_room$temp, col=colors[4], pos=4)
 
 # legend
 legend('bottomleft', y_range[1],
