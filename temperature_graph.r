@@ -120,7 +120,7 @@ titles <- c(
 )
 
 colors    <- c("black", "red", "chocolate", "lightsalmon", "gray50", "red4", "darkred", "darkgreen")
-plot_char <- c(0, 1, 4, 4, 4, 4, 4, 1)
+plot_char <- c(0, 1, 6, 2, 2, 6, 1, 1)
 line_type <- c(1, 1, 1, 1, 1, 1, 1, 0)
 
 png(filename="~/Sites/temperature.png",
