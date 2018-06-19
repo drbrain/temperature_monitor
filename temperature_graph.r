@@ -100,6 +100,7 @@ x_range   <- as.POSIXct(range(living_room$time,
                               garage$time,
                               outside$time),
                         "hours", tz="PST")
+
 y_range   <- range(living_room$temp,
                    kbfi$temp,
                    downstairs$temp,
@@ -167,7 +168,9 @@ lines(kbfi$time,        kbfi$temp,                col=colors[8], pch=plot_char[8
 
 # desired
 points(desired$time,    desired$temp,             col=colors[1], pch=plot_char[1])
-text(desired$time, desired$temp, desired$temp, col=colors[1], pos=4)
+if (max(desired$temp) != -Inf) {
+  text(desired$time, desired$temp, desired$temp, col=colors[1], pos=4)
+}
 
 latest_living_room <- tail(living_room, 1)
 text(latest_living_room$time, latest_living_room$temp, latest_living_room$temp, col=colors[4], pos=4)
